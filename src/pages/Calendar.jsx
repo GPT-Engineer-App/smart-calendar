@@ -21,6 +21,8 @@ const CalendarPage = () => {
   const [events, setEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [newEvent, setNewEvent] = useState({ title: "", start: "", end: "", description: "" });
+  const [calculatorOpen, setCalculatorOpen] = useState(false);
+  const [calculatorInput, setCalculatorInput] = useState("");
 
   const handleSelectSlot = ({ start, end }) => {
     setNewEvent({ ...newEvent, start, end });
@@ -30,6 +32,22 @@ const CalendarPage = () => {
   const handleAddEvent = () => {
     setEvents([...events, newEvent]);
     setModalOpen(false);
+  };
+
+  const handleCalculatorInput = (value) => {
+    setCalculatorInput(calculatorInput + value);
+  };
+
+  const handleCalculatorClear = () => {
+    setCalculatorInput("");
+  };
+
+  const handleCalculatorEvaluate = () => {
+    try {
+      setCalculatorInput(eval(calculatorInput).toString());
+    } catch {
+      setCalculatorInput("Error");
+    }
   };
 
   return (
@@ -70,6 +88,29 @@ const CalendarPage = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <Button onClick={() => setCalculatorOpen(!calculatorOpen)} className="fixed bottom-4 right-4">
+        {calculatorOpen ? "Close Calculator" : "Open Calculator"}
+      </Button>
+      {calculatorOpen && (
+        <div className="fixed bottom-16 right-4 bg-white p-4 rounded shadow-lg">
+          <div className="grid grid-cols-4 gap-2">
+            <Input value={calculatorInput} readOnly className="col-span-4 mb-2" />
+            {["7", "8", "9", "/"].map((value) => (
+              <Button key={value} onClick={() => handleCalculatorInput(value)}>{value}</Button>
+            ))}
+            {["4", "5", "6", "*"].map((value) => (
+              <Button key={value} onClick={() => handleCalculatorInput(value)}>{value}</Button>
+            ))}
+            {["1", "2", "3", "-"].map((value) => (
+              <Button key={value} onClick={() => handleCalculatorInput(value)}>{value}</Button>
+            ))}
+            {["0", ".", "=", "+"].map((value) => (
+              <Button key={value} onClick={() => value === "=" ? handleCalculatorEvaluate() : handleCalculatorInput(value)}>{value}</Button>
+            ))}
+            <Button className="col-span-4" onClick={handleCalculatorClear}>Clear</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
