@@ -4,6 +4,7 @@ import { format, parse, startOfWeek, getDay } from "date-fns";
 import enUS from "date-fns/locale/en-US";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Textarea } from "@chakra-ui/react";
+import { toast } from "sonner";
 
 const locales = {
   "en-US": enUS,
@@ -32,6 +33,7 @@ const CalendarPage = () => {
   const handleAddEvent = () => {
     setEvents([...events, newEvent]);
     setModalOpen(false);
+    toast.success("Event added successfully!");
   };
 
   const handleCalculatorInput = (value) => {
@@ -50,6 +52,23 @@ const CalendarPage = () => {
     }
   };
 
+  const eventStyleGetter = (event, start, end, isSelected) => {
+    const backgroundColor = event.color || "#3174ad";
+    const style = {
+      backgroundColor,
+      borderRadius: "5px",
+      opacity: 0.8,
+      color: "white",
+      border: "0px",
+      display: "block",
+      fontSize: "16px",
+      fontWeight: "bold",
+    };
+    return {
+      style,
+    };
+  };
+
   return (
     <div className="h-screen bg-cover bg-center" style={{ backgroundImage: "url('/images/sea-background.jpg')" }}>
       <ReactCalendar
@@ -60,6 +79,7 @@ const CalendarPage = () => {
         style={{ height: "80vh", margin: "50px" }}
         selectable
         onSelectSlot={handleSelectSlot}
+        eventPropGetter={eventStyleGetter}
       />
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <ModalOverlay />
